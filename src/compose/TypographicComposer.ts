@@ -46,7 +46,7 @@ export function composeTypographic(
             text: state.text + candidate.char,
             width: nextWidth,
             densityCost: state.densityCost + densityDelta,
-            score: state.score + densityDelta + 0.25 * widthDelta,
+            score: state.score + densityDelta + 0.5 * widthDelta,
           });
         }
       }
@@ -65,8 +65,8 @@ export function composeTypographic(
     }
 
     states.sort((left, right) => {
-      const leftFinalScore = left.score + 2 * (Math.abs(left.width - outputWidth) / averageWidth);
-      const rightFinalScore = right.score + 2 * (Math.abs(right.width - outputWidth) / averageWidth);
+      const leftFinalScore = left.score + 4 * (Math.abs(left.width - outputWidth) / averageWidth);
+      const rightFinalScore = right.score + 4 * (Math.abs(right.width - outputWidth) / averageWidth);
 
       if (leftFinalScore !== rightFinalScore) {
         return leftFinalScore - rightFinalScore;
@@ -77,10 +77,14 @@ export function composeTypographic(
       return left.densityCost - right.densityCost;
     });
 
+    const chosen = states[0];
+    const text = chosen?.text ?? ''.padEnd(grid.cols, ' ');
+    const width = chosen?.width ?? 0;
+
     rows.push([
       {
-        text: states[0]?.text ?? ''.padEnd(grid.cols, ' '),
-        x: 0,
+        text,
+        x: Math.max(0, (outputWidth - width) / 2),
         font: catalog.monoFont,
       },
     ]);

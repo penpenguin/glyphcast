@@ -38,7 +38,7 @@ export function createAppShell(root: HTMLElement, settings: Settings): AppElemen
           </label>
           <label>
             <span>Font family</span>
-            <input name="fontFamily" aria-label="Font family" list="font-options" value="${settings.fontFamily}" />
+            <input name="fontFamily" aria-label="Font family" list="font-options" />
           </label>
           <label>
             <span>Font size</span>
@@ -50,7 +50,7 @@ export function createAppShell(root: HTMLElement, settings: Settings): AppElemen
           </label>
           <label>
             <span>Palette</span>
-            <input name="palette" aria-label="Palette" type="text" value="${settings.palette}" />
+            <input name="palette" aria-label="Palette" type="text" />
           </label>
           <label>
             <span>Cols</span>
@@ -99,7 +99,7 @@ export function createAppShell(root: HTMLElement, settings: Settings): AppElemen
     </div>
   `;
 
-  return {
+  const elements = {
     fileInput: root.querySelector('[data-testid="file-input"]') as HTMLInputElement,
     form: root.querySelector('[data-testid="settings-form"]') as HTMLFormElement,
     outputCanvas: root.querySelector('[data-testid="output-canvas"]') as HTMLCanvasElement,
@@ -109,10 +109,31 @@ export function createAppShell(root: HTMLElement, settings: Settings): AppElemen
     stagePanel: root.querySelector('.stage-panel') as HTMLElement,
     video: root.querySelector('[data-testid="source-video"]') as HTMLVideoElement,
   };
+
+  writeSettings(elements.form, settings);
+
+  return elements;
 }
 
 export function applyStageLayout(stagePanel: HTMLElement, layout: StageLayout): void {
   stagePanel.dataset.layout = layout;
+}
+
+export function writeSettings(form: HTMLFormElement, settings: Settings): void {
+  (form.elements.namedItem('mode') as HTMLSelectElement).value = settings.mode;
+  (form.elements.namedItem('fontFamily') as HTMLInputElement).value = settings.fontFamily;
+  (form.elements.namedItem('fontSize') as HTMLInputElement).value = `${settings.fontSize}`;
+  (form.elements.namedItem('lineHeight') as HTMLInputElement).value = `${settings.lineHeight}`;
+  (form.elements.namedItem('palette') as HTMLInputElement).value = settings.palette;
+  (form.elements.namedItem('cols') as HTMLInputElement).value = `${settings.cols}`;
+  (form.elements.namedItem('invert') as HTMLInputElement).checked = settings.invert;
+  (form.elements.namedItem('beamWidth') as HTMLInputElement).value = `${settings.beamWidth}`;
+  (form.elements.namedItem('candidatesPerCell') as HTMLInputElement).value =
+    `${settings.candidatesPerCell}`;
+  (form.elements.namedItem('densityCanvasSize') as HTMLInputElement).value =
+    `${settings.densityCanvasSize}`;
+  (form.elements.namedItem('displayScale') as HTMLInputElement).value =
+    `${Math.round(settings.displayScale * 100)}`;
 }
 
 function readInteger(input: HTMLInputElement, fallback: number, minimum = 1): number {

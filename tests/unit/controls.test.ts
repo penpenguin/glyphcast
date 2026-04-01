@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { createAppShell, readSettings } from '../../src/ui/controls';
+import { createAppShell, readSettings, writeSettings } from '../../src/ui/controls';
 import type { Settings } from '../../src/types';
 
 const baseSettings: Settings = {
@@ -40,5 +40,41 @@ describe('controls', () => {
     const settings = readSettings(elements.form, baseSettings);
 
     expect(settings.displayScale).toBe(0.75);
+  });
+
+  it('writes updated settings back into the form fields', () => {
+    const root = document.querySelector<HTMLElement>('#root')!;
+    const elements = createAppShell(root, baseSettings);
+
+    writeSettings(elements.form, {
+      ...baseSettings,
+      mode: 'typographic',
+      fontFamily: 'Georgia',
+      palette: 'ABC',
+      beamWidth: 10,
+      candidatesPerCell: 10,
+      displayScale: 0.3,
+    });
+
+    expect((elements.form.elements.namedItem('mode') as HTMLSelectElement).value).toBe('typographic');
+    expect((elements.form.elements.namedItem('fontFamily') as HTMLInputElement).value).toBe('Georgia');
+    expect((elements.form.elements.namedItem('palette') as HTMLInputElement).value).toBe('ABC');
+    expect((elements.form.elements.namedItem('beamWidth') as HTMLInputElement).value).toBe('10');
+    expect((elements.form.elements.namedItem('candidatesPerCell') as HTMLInputElement).value).toBe('10');
+    expect((elements.form.elements.namedItem('displayScale') as HTMLInputElement).value).toBe('30');
+  });
+
+  it('preserves special characters in palette values', () => {
+    const root = document.querySelector<HTMLElement>('#root')!;
+    const settings = {
+      ...baseSettings,
+      palette: " .'`^\\\",:;Il!i",
+    };
+
+    const elements = createAppShell(root, settings);
+
+    expect((elements.form.elements.namedItem('palette') as HTMLInputElement).value).toBe(
+      settings.palette,
+    );
   });
 });

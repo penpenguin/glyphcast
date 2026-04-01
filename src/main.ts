@@ -1,21 +1,9 @@
 import { AsciiVideoController } from './controller/AsciiVideoController';
-import type { Settings } from './types';
-import { createAppShell, readSettings } from './ui/controls';
+import { applyModePreset, createDefaultSettings } from './settings/modePresets';
+import { createAppShell, readSettings, writeSettings } from './ui/controls';
 import './style.css';
 
-const defaultSettings: Settings = {
-  mode: 'mono',
-  cols: 96,
-  fontFamily: 'Georgia',
-  fontSize: 16,
-  lineHeight: 18,
-  palette: ' .:-=+*#%@',
-  invert: false,
-  beamWidth: 6,
-  candidatesPerCell: 4,
-  densityCanvasSize: 64,
-  displayScale: 0.5,
-};
+let currentSettings = createDefaultSettings();
 
 const app = document.querySelector<HTMLDivElement>('#app');
 
@@ -23,7 +11,7 @@ if (!app) {
   throw new Error('Missing #app root.');
 }
 
-const elements = createAppShell(app, defaultSettings);
+const elements = createAppShell(app, currentSettings);
 const controller = new AsciiVideoController(
   {
     outputCanvas: elements.outputCanvas,
@@ -33,11 +21,21 @@ const controller = new AsciiVideoController(
     status: elements.status,
     video: elements.video,
   },
-  defaultSettings,
+  currentSettings,
 );
 
 elements.form.addEventListener('input', () => {
-  const nextSettings = readSettings(elements.form, defaultSettings);
+  const draftSettings = readSettings(elements.form, currentSettings);
+  const nextSettings =
+    draftSettings.mode !== currentSettings.mode
+      ? applyModePreset(draftSettings.mode, draftSettings)
+      : draftSettings;
+
+  if (nextSettings !== draftSettings) {
+    writeSettings(elements.form, nextSettings);
+  }
+
+  currentSettings = nextSettings;
   void controller.setSettings(nextSettings);
 });
 

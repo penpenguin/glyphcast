@@ -87,4 +87,25 @@ describe('composeTypographic', () => {
     expect(rows[1][0]?.text).toHaveLength(3);
     expect(rows[0][0]?.font).toBe('16px Georgia');
   });
+
+  it('centers a row when the chosen text is narrower than the target width', () => {
+    const catalog = createCatalog([
+      makeGlyph('i', 3, 0.5),
+      makeGlyph('m', 7, 0.5),
+    ]);
+
+    const rows = composeTypographic(
+      {
+        cols: 2,
+        rows: 1,
+        luma: new Float32Array([0.5, 0.5]),
+      },
+      catalog,
+      16,
+      4,
+    );
+
+    expect(rows[0][0]?.text).toBe('mm');
+    expect(rows[0][0]?.x).toBe(1);
+  });
 });
