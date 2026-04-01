@@ -1,0 +1,135 @@
+:root {
+  color: #f3f1ea;
+  background: #161411;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(170, 123, 77, 0.24), transparent 32%),
+    linear-gradient(180deg, #211b15 0%, #120f0c 100%);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) 1fr;
+  gap: 24px;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.controls-panel,
+.video-panel,
+.output-panel {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 13, 11, 0.82);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+}
+
+.controls-panel {
+  padding: 20px;
+}
+
+.controls-panel h1,
+.video-panel h2,
+.output-panel h2 {
+  margin: 0 0 12px;
+  font-weight: 400;
+}
+
+.subtitle,
+.status {
+  margin: 0 0 16px;
+  color: rgba(243, 241, 234, 0.74);
+}
+
+.controls-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.controls-grid label {
+  display: grid;
+  gap: 6px;
+}
+
+.controls-grid input,
+.controls-grid select {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  padding: 10px 12px;
+}
+
+.checkbox-row {
+  align-items: center;
+  grid-template-columns: auto 1fr;
+}
+
+.checkbox-row input {
+  width: auto;
+}
+
+.stage-panel {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+}
+
+.stage-panel[data-layout='side-by-side'] {
+  grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+  align-items: start;
+}
+
+.stage-panel[data-layout='stacked'] {
+  grid-template-columns: 1fr;
+}
+
+.video-panel,
+.output-panel {
+  padding: 16px;
+}
+
+.video-panel video,
+.canvas-host,
+.canvas-host canvas {
+  width: 100%;
+}
+
+.canvas-host {
+  overflow: auto;
+  background: #000;
+  min-height: 180px;
+}
+
+.canvas-host canvas {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .stage-panel[data-layout='side-by-side'] {
+    grid-template-columns: 1fr;
+  }
+}
